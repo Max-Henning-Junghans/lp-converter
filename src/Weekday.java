@@ -21,4 +21,31 @@ public enum Weekday {
 		}
 		return 0;  // This case won't happen and this tool won't be used enough to need error management.
 	}
+
+	public static Weekday weekdayFinder(String input) {
+		switch (input) {
+			case "Mo" -> {
+				return MONDAY;
+			}
+			case "Di" -> {
+				return TUESDAY;
+			}
+			case "Mi" -> {
+				return WEDNESDAY;
+			}
+			case "Do" -> {
+				return THURSDAY;
+			}
+			case "Fr" -> {
+				return FRIDAY;
+			}
+			case "Sa" -> {
+				return SATURDAY;
+			}
+			case "So" -> {
+				return SUNDAY;
+			}
+		}
+		return null;
+	}
 }

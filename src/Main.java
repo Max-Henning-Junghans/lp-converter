@@ -16,7 +16,10 @@ public class Main {
 		 * Für gleichen Film mehrmals: x_1 + x_1' <= 1
 		 * Eventuell Zeit als Minuten seit Montag morgen
 		 */
-		MovieData[] movieData = readData(args[0]);
+		printToFile(lpWriter(readData(args[0])), "output.txt");
+	}
+
+	private static String lpWriter(MovieData[] movieData) {
 		Arrays.sort(movieData);
 
 		List<MovieData> equalObjects = new ArrayList<>();
@@ -87,7 +90,11 @@ public class Main {
 			output.append(", x").append(i + 1);
 		}
 		output.append(";");
-		try (PrintWriter out = new PrintWriter("output.txt")) {
+		return output.toString();
+	}
+
+	private static void printToFile(String output, String fileName) {
+		try (PrintWriter out = new PrintWriter(fileName)) {
 			out.println(output);
 		} catch (FileNotFoundException e) {System.out.println(e);}
 	}
@@ -107,36 +114,9 @@ public class Main {
 		String[] temp;
 		for (int i = 0; i < lines.length; i++) {
 			temp = lines[i].split(";");
-			movieData[i] = new MovieData(weekdayFinder(temp[0]), new Time(temp[1]), Integer.parseInt(temp[2]), temp[3], Double.parseDouble(temp[4]));
+			movieData[i] = new MovieData(Weekday.weekdayFinder(temp[0]), new Time(temp[1]), Integer.parseInt(temp[2]), temp[3], Double.parseDouble(temp[4]));
 		}
 		return movieData;
-	}
-
-	private static Weekday weekdayFinder(String input) {
-		switch (input) {
-			case "Mo" -> {
-				return Weekday.MONDAY;
-			}
-			case "Di" -> {
-				return Weekday.TUESDAY;
-			}
-			case "Mi" -> {
-				return Weekday.WEDNESDAY;
-			}
-			case "Do" -> {
-				return Weekday.THURSDAY;
-			}
-			case "Fr" -> {
-				return Weekday.FRIDAY;
-			}
-			case "Sa" -> {
-				return Weekday.SATURDAY;
-			}
-			case "So" -> {
-				return Weekday.SUNDAY;
-			}
-		}
-		return null;
 	}
 
 	private static String readFromInputStream(InputStream inputStream)
