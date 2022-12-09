@@ -45,7 +45,9 @@ public enum Weekday {
 			case "So" -> {
 				return SUNDAY;
 			}
+			default -> {
+				return TUESDAY; //return null; Quick fix, there seems to be a problem with the input data.
+			}
 		}
-		return null;
 	}
 }

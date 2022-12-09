@@ -9,14 +9,23 @@ import java.util.List;
 public class Main {
 
 	public static void main(String[] args) {
-		/**
-		 * Idee: Jedes Abspielen eines Films: Variablen x_1 bis x_x, x = 1 bedeutet Film wird gezeigt, 0 Film wird nicht gezeigt,
-		 * Für jeden Start eines Films: Einschränkungen für die Filme, die parallel laufen.
-		 * x_1 + x_x <= 1
-		 * Für gleichen Film mehrmals: x_1 + x_1' <= 1
-		 * Eventuell Zeit als Minuten seit Montag morgen
-		 */
-		printToFile(lpWriter(readData(args[0])), "output.txt");
+		List<String> fileNames = readFileNames(args[0]);
+		for (String fileName : fileNames) {
+			printToFile(lpWriter(readData(args[0], fileName)), args[1], fileName.substring(0, fileName.length() - 4) + ".lp");
+		}
+	}
+
+	private static List<String> readFileNames(String dirName) {
+		File folder = new File(dirName);
+		File[] listOfFiles = folder.listFiles();
+		List<String> listOfFileNames = new ArrayList<>();
+		assert listOfFiles != null;
+		for (File listOfFile : listOfFiles) {
+			if (listOfFile.isFile()) {
+				listOfFileNames.add(listOfFile.getName());
+			}
+		}
+		return listOfFileNames;
 	}
 
 	private static String lpWriter(MovieData[] movieData) {
@@ -40,16 +49,16 @@ public class Main {
 
 
 		HashSet<Integer> set = new HashSet<>();
-		List listOfItemsToRemove = null;
+		List<Integer> listOfItemsToRemove;
 		for (int i = 0; i < movieData.length; i++) {
-			listOfItemsToRemove = new ArrayList();
+			listOfItemsToRemove = new ArrayList<>();
 			for (int item: set) {
 				if (movieData[item].getEndTimeInMinutes() <= movieData[i].getStartTimeInMinutes()) {
 					listOfItemsToRemove.add(item);
 				}
 			}
-			for (int j = 0; j < listOfItemsToRemove.size(); j++) {
-				set.remove(listOfItemsToRemove.get(j));
+			for (Integer integer : listOfItemsToRemove) {
+				set.remove(integer);
 			}
 			output.append("x").append(i + 1);
 			for (Integer item: set) {
@@ -93,16 +102,16 @@ public class Main {
 		return output.toString();
 	}
 
-	private static void printToFile(String output, String fileName) {
-		try (PrintWriter out = new PrintWriter(fileName)) {
+	private static void printToFile(String output, String dirname, String fileName) {
+		try (PrintWriter out = new PrintWriter(dirname + fileName)) {
 			out.println(output);
 		} catch (FileNotFoundException e) {System.out.println(e);}
 	}
 
-	private static MovieData[] readData(String fileName) {
+	private static MovieData[] readData(String dirName, String fileName) {
 		Class<Main> classVar = Main.class;
-		InputStream inputStream = classVar.getResourceAsStream("/datainput/" + fileName);
-		String data = null;
+		InputStream inputStream = classVar.getResourceAsStream("/" + dirName + fileName);
+		String data;
 		try {
 			data = readFromInputStream(inputStream);
 		} catch (IOException e) {
