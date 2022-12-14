@@ -25,3 +25,5 @@ replay_pid*
 /out/
 /datainput/
 /.idea/
+/dataoutput/
+/lp_solve_5.5.2.11_exe_win64/
